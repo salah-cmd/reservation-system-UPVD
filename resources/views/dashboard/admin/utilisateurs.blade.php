@@ -2,7 +2,7 @@
 @section('title', 'Gestion Utilisateurs')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/utilisateurs.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/inventaire.css') }}">
 @endsection
 
 @section('scripts')

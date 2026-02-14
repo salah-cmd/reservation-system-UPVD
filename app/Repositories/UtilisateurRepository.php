@@ -28,7 +28,7 @@ class UtilisateurRepository
             ORDER BY idUtilisateur");
     }
 
-    public function getLastIdUser(string $role): int{
+    public function getNewIdUser(string $role): int{
         $lastID = DB::selectOne("
         select substring(idUtilisateur, '4') as nvID from utilisateur
         where role=?
@@ -42,23 +42,14 @@ class UtilisateurRepository
 
     public function createUtilisateur(array $data): bool
     {
-        // Hash du mot de passe (important)
+        // Hash du mot de passe
         $hashedPassword = Hash::make($data['password']);
 
 
-        if($data['role'] == 'etudiant'){
-            $newID = $this->getLastIdUser('etudiant');
-            $idUser = 'ETU'.$newID;
-        }else if ($data['role'] == 'admin'){
-            $newID = $this->getLastIdUser('admin');
-            $idUser = 'ADM'.$newID;
-        }else{
-            $newID = $this->getLastIdUser('enseignant');
-            $idUser = 'ENS'.$newID;
-        }
+        $idUser = strtoupper(substr($data['role'], 0, 3)) . $this->getNewIdUser($data['role']);
 
         try {
-            // SQL pur (paramétré => évite SQL injection)
+            //(paramétré => évite SQL injection)
             DB::insert("
                 INSERT INTO utilisateur
                 (idUtilisateur, nom, prenom, adresseMail, telephone, role, actif, mdp)

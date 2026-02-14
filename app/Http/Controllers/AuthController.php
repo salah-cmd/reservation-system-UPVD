@@ -38,7 +38,7 @@ class AuthController extends Controller
             return back()->with('error','Identifiant ou mot de passe incorrect');
         }
 
-        //TODO: mdp doit etre hashé
+
         //3) Vérifier le mot de passe
         if (!Hash::check($password, $user->mdp)) {
             return back()->with('error', 'Mot de passe incorrect');

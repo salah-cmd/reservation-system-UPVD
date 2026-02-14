@@ -40,11 +40,20 @@ Route::middleware('auth.session')->group(function () {
     Route::get('/dashboard/admin/utilisateurs',[AdminDashboardController::class, 'utilisateurs']
     )->middleware('role:admin');
 
-    Route::post('/dashboard/admin/utilisateurs', [AdminDashboardController::class, 'store'])
+    Route::post('/dashboard/admin/utilisateurs', [AdminDashboardController::class, 'storeUtilisateur'])
         ->name('admin.utilisateurs.store')->middleware('role:admin');
 
-    Route::put('/dashboard/admin/utilisateurs', [AdminDashboardController::class, 'update'])
+    Route::put('/dashboard/admin/utilisateurs', [AdminDashboardController::class, 'updateUtilisateur'])
         ->name('admin.utilisateurs.update')->middleware('role:admin');
+
+    Route::get('/dashboard/admin/salles', [AdminDashboardController::class, 'salles']
+    )->middleware('role:admin');
+
+    Route::post('/dashboard/admin/salles', [AdminDashboardController::class, 'storeSalle']
+    )->name('admin.salles.store')->middleware('role:admin');
+
+    Route::put('/dashboard/admin/salles', [AdminDashboardController::class, 'updateSalle'])
+        ->name('admin.salles.update')->middleware('role:admin');
 
 });
 

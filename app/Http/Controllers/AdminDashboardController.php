@@ -7,6 +7,7 @@ use App\Repositories\UtilisateurRepository;
 use App\Mail\CompteCreeMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Repositories\SalleRepository;
 
 class AdminDashboardController extends Controller
 {
@@ -29,8 +30,15 @@ class AdminDashboardController extends Controller
         return view('dashboard.admin.utilisateurs', compact('user', 'users'));
     }
 
+    public function salles(SalleRepository $salleRepo){
+        $user = session('user');
 
-    public function store(Request $request, UtilisateurRepository $repo)
+        $salles = $salleRepo->getSalles();
+        return view('dashboard.admin.salles', compact('user', 'salles'));
+    }
+
+
+    public function storeUtilisateur(Request $request, UtilisateurRepository $repo)
     {
         // Validation (adapte les champs)
         $data = $request->validate([
@@ -58,7 +66,7 @@ class AdminDashboardController extends Controller
 
     }
 
-    public function update(Request $request, UtilisateurRepository $repo){
+    public function updateUtilisateur(Request $request, UtilisateurRepository $repo){
         $data = $request->validate([
             'idUtilisateur' => 'required|string',
             'nom'          => 'required|string|max:60',
@@ -80,5 +88,44 @@ class AdminDashboardController extends Controller
 
         return back()->with('success', "Utilisateur modifié avec succès.");
 
+    }
+
+    public function storeSalle(Request $request, SalleRepository $repo){
+
+        $data = $request->validate([
+            'capacite'        => 'required',
+            'type'            => 'required|in:amphi,groupe,tp,reunion',
+            'description'     => 'nullable|string|max:500',
+            'statut'          => 'required|in:disponible,indisponible',
+        ]);
+
+        $ok=$repo->createSalle($data);
+
+        if (!$ok) {
+            return back()->withErrors(['Erreur' => "Une erreur s'est produite lors de l'insertion de la salle"])
+                ->withInput();
+        }
+
+        return back()->with('success', "Salle ajoutée avec succès.");
+
+    }
+
+    public function updateSalle(Request $request, SalleRepository $repo){
+        $data = $request->validate([
+            'codeSalle'       => 'required',
+            'capacite'        => 'required',
+            'type'            => 'required|in:amphi,groupe,tp,reunion',
+            'description'     => 'nullable|string|max:500',
+            'statut'          => 'required|in:disponible,indisponible',
+        ]);
+
+        $ok=$repo->updateSalle($data);
+
+        if (!$ok) {
+            return back()->withErrors(['Erreur' => "Une erreur s'est produite lors de l'insertion de la salle"])
+                ->withInput();
+        }
+
+        return back()->with('success', "Salle modifiée avec succès.");
     }
 }
