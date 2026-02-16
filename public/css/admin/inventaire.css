@@ -140,6 +140,15 @@
     cursor:pointer;
 }
 
+.btn-delete{
+    background: #ff5e5e;
+    color:#fff;
+    border:0;
+    padding:8px 14px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
 .btn-edit:hover {
     background: #0051d5;
 }

@@ -55,6 +55,18 @@ Route::middleware('auth.session')->group(function () {
     Route::put('/dashboard/admin/salles', [AdminDashboardController::class, 'updateSalle'])
         ->name('admin.salles.update')->middleware('role:admin');
 
+    Route::get('/dashboard/admin/materiels', [AdminDashboardController::class, 'materiels']
+    )->middleware('role:admin');
+
+    Route::post('/dashboard/admin/materiels', [AdminDashboardController::class, 'storeMateriel']
+    )->name('admin.materiels.store')->middleware('role:admin');
+
+    Route::put('/dashboard/admin/materiels', [AdminDashboardController::class, 'updateMateriel']
+    )->name('admin.materiels.update')->middleware('role:admin');
+
+    Route::delete('/dashboard/admin/materiels/{codeMat}', [AdminDashboardController::class, 'destroyMateriel']
+    )->name('admin.materiels.destroy')->middleware('role:admin');
+
 });
 
 

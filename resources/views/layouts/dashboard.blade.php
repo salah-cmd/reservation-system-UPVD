@@ -29,7 +29,8 @@
                href="/dashboard/admin/utilisateurs"><span>👤</span> Utilisateurs</a>
             <a class="item {{ request()->is('dashboard/admin/salles') ? 'active' : '' }}"
                href="/dashboard/admin/salles"><span>🏫</span> Gestion des salles</a>
-            <a class="item" href="#"><span>🧰</span> Gestion des matériels</a>
+            <a class="item {{ request()->is('dashboard/admin/materiels') ? 'active' : '' }}"
+               href="/dashboard/admin/materiels"><span>🧰</span> Gestion des matériels</a>
             <a class="item" href="#"><span>📅</span> Réservations</a>
             <a class="item" href="#"><span>📊</span> Rapports</a>
             <a class="item" href="#"><span>⚙️</span> Paramètres</a>
