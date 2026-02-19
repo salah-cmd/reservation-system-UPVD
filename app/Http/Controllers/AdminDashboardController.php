@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Repositories\DashboardRepository;
 use App\Repositories\MaterielRepository;
+use App\Repositories\ReservationRepository;
 use App\Repositories\UtilisateurRepository;
-use App\Mail\CompteCreeMail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use App\Repositories\SalleRepository;
 
 class AdminDashboardController extends Controller
@@ -45,6 +44,14 @@ class AdminDashboardController extends Controller
         return view('dashboard.admin.materiels', compact('user', 'materiels'));
     }
 
+    public function reservations(ReservationRepository $reservationRepo){
+        $user = session('user');
+        $reservations = $reservationRepo->getReservations();
+
+
+        return view('dashboard.admin.reservations', compact('user', 'reservations'));
+    }
+
 
     public function storeUtilisateur(Request $request, UtilisateurRepository $repo)
     {
@@ -80,7 +87,7 @@ class AdminDashboardController extends Controller
             'capacite'        => 'required',
             'type'            => 'required|in:amphi,groupe,tp,reunion',
             'description'     => 'nullable|string|max:500',
-            'statut'          => 'required|in:disponible,indisponible',
+            'disponibilite'          => 'required|in:disponible,indisponible',
         ]);
 
         $ok=$repo->createSalle($data);
@@ -146,7 +153,7 @@ class AdminDashboardController extends Controller
             'capacite'        => 'required',
             'type'            => 'required|in:amphi,groupe,tp,reunion',
             'description'     => 'nullable|string|max:500',
-            'statut'          => 'required|in:disponible,indisponible',
+            'disponibilite'          => 'required|in:disponible,indisponible',
         ]);
 
         $ok=$repo->updateSalle($data);

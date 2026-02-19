@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.admin')
 @section('title', 'Gestion salles')
 
 @section('styles')
@@ -18,7 +18,7 @@
                 const selectedType = select.value;
 
                 rows.forEach(row => {
-                    const rowType = row.dataset.statut;
+                    const rowType = row.dataset.type;
                     if (selectedType === "" || rowType === selectedType) {
                         row.style.display = "";
                     } else {
@@ -113,7 +113,7 @@
                     <tbody>
                     @forelse($salles as $s)
                         @php
-                            $statutTxt = $s->statut ? 'disponible ' : 'indisponible ';
+                            $statutTxt = $s->disponibilite ? 'disponible ' : 'indisponible ';
 
                             // Texte "indexé" pour la recherche (tout en minuscule)
                             $searchText = strtolower(
@@ -121,13 +121,13 @@
                             );
                         @endphp
 
-                        <tr class="salle-row" data-statut="{{$s->typeSalle}}" data-search="{{ $searchText }}">
+                        <tr class="salle-row" data-type="{{$s->typeSalle}}" data-search="{{ $searchText }}">
                             <td class="muted">{{ $s->codeSalle }}</td>
                             <td class="name">{{$s->capacite }}</td>
                             <td class="muted">{{ $s->typeSalle }}</td>
                             <td>{{ ucfirst($s->description) }}</td>
                             <td>
-                                @if($s->statut)
+                                @if($s->disponibilite)
                                     <span class="badge badge-green">Disponible</span>
                                 @else
                                     <span class="badge badge-gray">Indisponible</span>
@@ -141,7 +141,7 @@
                                         data-capacite="{{ $s->capacite }}"
                                         data-description="{{ $s->description }}"
                                         data-type="{{ $s->typeSalle }}"
-                                        data-statut="{{ $s->statut ? 'disponible' : 'indisponible' }}">
+                                        data-disponibilite="{{ $s->disponibilite ? 'disponible' : 'indisponible' }}">
                                     Éditer
                                 </button>
                             </td>
@@ -188,12 +188,12 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">Description </label>
-                                    <textarea name ="description" class ="form-control"></textarea>
+                                    <textarea name="description" class="form-control"></textarea>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label">Statut *</label>
-                                    <select name="statut" class="form-select" required>
+                                    <label class="form-label">disponibilite *</label>
+                                    <select name="disponibilite" class="form-select" required>
                                         <option value="disponible">Disponible</option>
                                         <option value="indisponible">Indisponible</option>
                                     </select>
@@ -245,7 +245,8 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Capacité</label>
-                                    <input name="capacite" id="edit_capacite" class="form-control" type="number" required>
+                                    <input name="capacite" id="edit_capacite" class="form-control" type="number"
+                                           required>
                                 </div>
 
                                 <div class="col-md-6">
@@ -260,12 +261,12 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">Description </label>
-                                    <textarea name ="description" id="edit_description" class ="form-control"></textarea>
+                                    <textarea name="description" id="edit_description" class="form-control"></textarea>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label">Statut *</label>
-                                    <select name="statut" id="edit_statut" class="form-select" required>
+                                    <label class="form-label">disponibilite *</label>
+                                    <select name="disponibilite" id="edit_disponibilite" class="form-select" required>
                                         <option value="disponible">Disponible</option>
                                         <option value="indisponible">Indisponible</option>
                                     </select>
@@ -291,7 +292,7 @@
                                 document.getElementById('edit_capacite').value = btn.dataset.capacite ?? '';
                                 document.getElementById('edit_description').value = btn.dataset.description ?? '';
                                 document.getElementById('edit_type').value = btn.dataset.type ?? '';
-                                document.getElementById('edit_statut').value = btn.dataset.statut ?? 'disponible';
+                                document.getElementById('edit_disponibilite').value = btn.dataset.disponibilite ?? 'disponible';
 
                             });
                         });

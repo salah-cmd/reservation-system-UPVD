@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.admin')
 @section('title', 'Gestion materiels')
 
 @section('styles')
@@ -15,7 +15,7 @@
                 const query = searchInput.value.toLowerCase();
 
                 rows.forEach(row => {
-                    row.style.display ="";
+                    row.style.display = "";
                     const text = (row.dataset.search || "");
                     if (!text.includes(query)) row.style.display = "none";
                 });
@@ -71,7 +71,7 @@
                             );
                         @endphp
 
-                        <tr class="materiel-row"  data-search="{{ $searchText }}">
+                        <tr class="materiel-row" data-search="{{ $searchText }}">
                             <td class="muted">{{ $m->codeMat }}</td>
                             <td class="name">{{ $m->nom }}</td>
                             <td class="muted">{{ $m->qteTotal }}</td>
@@ -87,7 +87,8 @@
                                     📝
                                 </button>
 
-                                <form method="POST" action="{{ route('admin.materiels.destroy', $m->codeMat) }}" style="display:inline;">
+                                <form method="POST" action="{{ route('admin.materiels.destroy', $m->codeMat) }}"
+                                      style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-delete"
@@ -137,7 +138,7 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">Description </label>
-                                    <textarea name ="description" class ="form-control"></textarea>
+                                    <textarea name="description" class="form-control"></textarea>
                                 </div>
 
                             </div>
@@ -192,12 +193,13 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">Quantité total</label>
-                                    <input name="qteTotal" id="edit_qteTotal" class="form-control" type="number" required>
+                                    <input name="qteTotal" id="edit_qteTotal" class="form-control" type="number"
+                                           required>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Description </label>
-                                    <textarea name ="description" id="edit_description" class ="form-control"></textarea>
+                                    <textarea name="description" id="edit_description" class="form-control"></textarea>
                                 </div>
 
 

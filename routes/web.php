@@ -67,6 +67,8 @@ Route::middleware('auth.session')->group(function () {
     Route::delete('/dashboard/admin/materiels/{codeMat}', [AdminDashboardController::class, 'destroyMateriel']
     )->name('admin.materiels.destroy')->middleware('role:admin');
 
+    Route::get('/dashboard/admin/reservations', [AdminDashboardController::class, 'reservations']
+    )->middleware('role:admin');
 });
 
 

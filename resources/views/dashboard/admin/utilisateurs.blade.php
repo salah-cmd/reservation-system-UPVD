@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.admin')
 @section('title', 'Gestion Utilisateurs')
 
 @section('styles')
@@ -108,7 +108,7 @@
                         <th>Rôle</th>
                         <th>Téléphone</th>
                         <th>Statut</th>
-                        <th>Actions</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
 
@@ -127,7 +127,7 @@
 
                         <tr class="user-row" data-role="{{ $u->role }}" data-search="{{ $searchText }}">
                             <td class="muted">{{ $u->idUtilisateur }}</td>
-                            <td class="name">{{strtoupper($u->nom) }} {{ $u->prenom }}</td>
+                            <td class="name">{{$u->nom }} {{ $u->prenom }}</td>
                             <td class="muted">{{ $u->adresseMail }}</td>
                             <td>{{ ucfirst($u->role) }}</td>
                             <td class="muted">{{$u->telephone}}</td>
@@ -221,7 +221,8 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">Confirmer *</label>
-                                    <input name="password_confirmation" type="password" class="form-control" required minlength="8">
+                                    <input name="password_confirmation" type="password" class="form-control" required
+                                           minlength="8">
                                 </div>
                             </div>
 
@@ -300,11 +301,13 @@
                                 {{-- Optionnel: changer mot de passe --}}
                                 <div class="col-md-6">
                                     <label class="form-label">Nouveau mot de passe (optionnel)</label>
-                                    <input name="password" id="edit_password" type="password" class="form-control" minlength="8">
+                                    <input name="password" id="edit_password" type="password" class="form-control"
+                                           minlength="8">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Confirmation</label>
-                                    <input name="password_confirmation" id="edit_password_confirmation" type="password" class="form-control" minlength="8">
+                                    <input name="password_confirmation" id="edit_password_confirmation" type="password"
+                                           class="form-control" minlength="8">
                                 </div>
                             </div>
                         </div>

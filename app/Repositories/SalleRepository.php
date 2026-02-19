@@ -31,14 +31,14 @@ class SalleRepository
 
         try{
             DB::insert("
-            insert into salle (codeSalle, capacite, typeSalle, description, statut)
+            insert into salle (codeSalle, capacite, typeSalle, description, disponibilite)
             values (?, ?, ?, ?, ?)
             ", [
                 $codeSalle,
                 $data['capacite'],
                 $data['type'],
                 $data['description'],
-                $data['statut'] == "disponible" ? 1 : 0,
+                $data['disponibilite'] == "disponible" ? 1 : 0,
             ]);
             return true;
         }catch (\Throwable $e) {
@@ -50,12 +50,12 @@ class SalleRepository
         try{
             db::update("
             update salle
-            set capacite = ?, typeSalle = ?, description = ?, statut = ?
+            set capacite = ?, typeSalle = ?, description = ?, disponibilite = ?
             where codeSalle = ?", [
                 $data['capacite'],
                 $data['type'],
                 $data['description'],
-                $data['statut'] == "disponible" ? 1 : 0,
+                $data['disponibilite'] == "disponible" ? 1 : 0,
                 $data['codeSalle']
             ]);
 
