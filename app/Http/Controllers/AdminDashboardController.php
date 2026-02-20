@@ -197,4 +197,26 @@ class AdminDashboardController extends Controller
         return back()->with('success', 'Matériel supprimé avec succès');
     }
 
+    public function getReservationDetails($id, ReservationRepository $repo)
+    {
+        // Procédure 1 : détails réservation + utilisateur + salle
+        $details = $repo->getReservationDetails($id);
+
+        // Procédure 2 : matériels
+        $materiels = $repo->getReservationMateriels($id);
+
+        // Si aucune réservation trouvée
+        if (empty($details)) {
+            return response()->json([
+                'success' => false
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'details' => $details[0], // une seule ligne
+            'materiels' => $materiels // tableau (0, 1 ou plusieurs)
+        ]);
+    }
+
 }

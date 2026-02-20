@@ -69,6 +69,9 @@ Route::middleware('auth.session')->group(function () {
 
     Route::get('/dashboard/admin/reservations', [AdminDashboardController::class, 'reservations']
     )->middleware('role:admin');
+
+    Route::get('/dashboard/admin/reservations/{id}', [AdminDashboardController::class, 'getReservationDetails']
+    )->middleware('role:admin');
 });
 
 
