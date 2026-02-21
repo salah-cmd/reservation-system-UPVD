@@ -219,4 +219,30 @@ class AdminDashboardController extends Controller
         ]);
     }
 
+    public function validerReservation($id, Request $request, ReservationRepository $repo){
+        $data = [
+            "email"=>$request->input('emailUtilisateur'),
+            "nomComplet"=>$request->input('nomComplet'),
+            "idReservation"=>$request->input('idReservation'),
+            "dateDebut"=>$request->input('dateDebut'),
+            "dateFin"=>$request->input('dateFin'),
+            "salle"=>$request->input('salle'),
+            "motif"=>$request->input('motif'),
+            "nbMateriels" =>$request->input('nbMateriels'),
+        ];
+        $idAdmin = session('user')['idUtilisateur'];
+        $ok = $repo->validerReservation($id, $idAdmin, $data);
+
+        if(!$ok){
+            return back()->withErrors(['Erreur'=> 'Seules les réservations en attente peuvent être validées']);
+        }
+
+        return back()->with('success', 'Réservation N°: ' . $id.', validée avec succes');
+
+    }
+
+    public function refuserReservation($id, ReservationRepository $repo, Request $request){
+
+    }
+
 }

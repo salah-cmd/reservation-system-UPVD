@@ -110,12 +110,33 @@
                         }
 
                         // ================= RESERVATION =================
+
+                        if(d.statut === "valider"){
+                            document.getElementById('text_traiteLe').innerText = "Validée le: ";
+                            document.getElementById('text_traitePar').innerText = "Validée par: ";
+                            document.getElementById('res_traiteLe').innerText = d.traiteLe;
+                            document.getElementById('res_traitePar').innerText = d.traitePar;
+                            console.log("Valider par: " + d.traitePar);
+                        }else if(d.statut === "refuser"){
+                            document.getElementById('text_traiteLe').innerText = "Refusée le: ";
+                            document.getElementById('text_traitePar').innerText = "Refusée par: ";
+                            document.getElementById('res_traiteLe').innerText = d.traiteLe;
+                            document.getElementById('res_traitePar').innerText = d.traitePar;
+                        }else if(d.statut === "annulee"){
+                            document.getElementById('text_traiteLe').innerText = "Annulée le: ";
+                            document.getElementById('text_traitePar').innerText = "Annulée par: ";
+                            document.getElementById('res_traiteLe').innerText = d.traiteLe;
+                            document.getElementById('res_traitePar').innerText = d.traitePar;
+                        }else {
+                            document.getElementById('text_traiteLe').innerText = "";
+                            document.getElementById('text_traitePar').innerText = "";
+                            document.getElementById('res_traiteLe').innerText = "";
+                            document.getElementById('res_traitePar').innerText = "";
+                        }
                         document.getElementById('res_debut').innerText = d.dateDebut;
                         document.getElementById('res_fin').innerText = d.dateFin;
                         document.getElementById('res_motif').innerText = d.motif;
                         document.getElementById('res_nbPersonnes').innerText = d.nbPersonnes;
-                        document.getElementById('res_valideA').innerText = d.valideA;
-                        document.getElementById('res_validePar').innerText = d.validePar;
                         document.getElementById('res_dateReservation').innerText = d.dateReservation;
 
                         // ================= MATERIELS =================
@@ -152,6 +173,15 @@
                         document.getElementById('refuseForm').action =
                             `/dashboard/admin/reservations/${id}/refuser`;
 
+                        document.getElementById('emailValidate').value = d.adresseMail;
+                        document.getElementById('emailRefuse').value = d.adresseMail;
+                        document.getElementById('idReservation').value = d.idReservation;
+                        document.getElementById('dateDebut').value = d.dateDebut;
+                        document.getElementById('dateFin').value = d.dateFin;
+                        document.getElementById('salle').value = d.codeSalle;
+                        document.getElementById('motif').value = d.motif;
+                        document.getElementById('nomComplet').value = d.nomComplet;
+                        document.getElementById('nbMateriels').value = d.nbMateriels;
                     })
                     .catch(error => {
                         console.error(error);
@@ -345,8 +375,8 @@
                                         <p><strong>Au :</strong> <span id="res_fin"></span></p>
                                         <p><strong>Motif :</strong> <span id="res_motif"></span></p>
                                         <p><strong>Nombre de personnes :</strong> <span id="res_nbPersonnes"></span></p>
-                                        <p><strong>Validée le :</strong> <span id="res_valideA"></span></p>
-                                        <p><strong>validée par :</strong> <span id="res_validePar"></span></p>
+                                        <p><strong id="text_traiteLe"></strong> <span id="res_traiteLe"></span></p>
+                                        <p><strong id="text_traitePar"></strong> <span id="res_traitePar"></span></p>
                                         <p><strong>Date Réservation :</strong> <span id="res_dateReservation"></span></p>
                                     </div>
                                 </div>
@@ -361,6 +391,14 @@
 
                         <form id="validateForm" method="POST">
                             @csrf
+                            <input type="hidden" name="emailUtilisateur" id="emailValidate">
+                            <input type="hidden" name ="idReservation" id="idReservation">
+                            <input type="hidden" name ="dateDebut" id="dateDebut">
+                            <input type="hidden" name ="dateFin" id="dateFin">
+                            <input type="hidden" name ="salle" id="salle">
+                            <input type="hidden" name ="motif" id="motif">
+                            <input type="hidden" name="nomComplet" id="nomComplet">
+                            <input type="hidden" name="nbMateriels" id="nbMateriels">
                             <button type="submit" class="btn btn-success">
                                 Valider
                             </button>
@@ -368,6 +406,7 @@
 
                         <form id="refuseForm" method="POST">
                             @csrf
+                            <input type="hidden" name="emailUtilisateur" id="emailRefuse">
                             <button type="submit" class="btn btn-danger">
                                 Refuser
                             </button>
@@ -376,6 +415,18 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             Annuler
                         </button>
+
+                        @if ($errors->any())
+                            <script>
+                                alert(@json($errors->first()));
+                            </script>
+                        @endif
+
+                        @if (session('success'))
+                            <script>
+                                alert(@json(session('success')));
+                            </script>
+                        @endif
 
                     </div>
 

@@ -72,6 +72,12 @@ Route::middleware('auth.session')->group(function () {
 
     Route::get('/dashboard/admin/reservations/{id}', [AdminDashboardController::class, 'getReservationDetails']
     )->middleware('role:admin');
+
+    Route::post('/dashboard/admin/reservations/{id}/valider', [AdminDashboardController::class, 'validerReservation']
+    )->middleware('role:admin');
+
+    Route::post('/dashboard/admin/reservations/{id}/refuser', [AdminDashboardController::class, 'refuserReservation']
+    )->middleware('role:admin');
 });
 
 
