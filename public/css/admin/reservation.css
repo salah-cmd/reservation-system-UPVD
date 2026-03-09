@@ -1,0 +1,206 @@
+.users-page{
+    padding:5px;
+}
+
+.page-title{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+/* Toolbar */
+.toolbar{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+}
+
+.filters{
+    display:flex;
+    gap:12px;
+}
+
+.btn-primary{
+    background:#2f6fe4;
+    color:#fff;
+    border:0;
+    padding:12px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    box-shadow:0 10px 25px rgba(47,111,228,.18);
+}
+
+.input-search{
+    position:relative;
+    min-width:280px;
+}
+
+.input-search input{
+    width:100%;
+    padding:12px 14px 12px 40px;
+    border-radius:12px;
+    border:1px solid #e5eaf2;
+}
+
+.search-ico{
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+}
+
+.filters select{
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #e5eaf2;
+}
+
+/* Card */
+.card{
+    background:#fff;
+    border-radius:14px;
+    border:1px solid #eef2f8;
+    box-shadow:0 12px 40px rgba(12,30,66,.08);
+}
+
+/* ✅ SCROLLBAR (le plus important) */
+.table-wrap{
+    max-height: 420px;   /* ajuste: 380 / 450 / 520 selon ton écran */
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 14px;
+}
+
+/* header fixe quand tu scroll */
+.users-table thead th{
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #fbfcff;
+}
+
+.users-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.users-table th,
+.users-table td{
+    padding:12px;
+    border-bottom:1px solid #f0f3f9;
+}
+
+.users-table th{
+    text-align:left;
+    color:#65708a;
+}
+
+.users-table tr:hover{
+    background: #f6f6f6;
+}
+
+.name{
+    font-weight:600;
+    font-size: 16px;
+}
+
+.date{
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.muted{
+    color:#6c778f;
+}
+
+/* Badges */
+.badge{
+    padding:6px 12px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:12px;
+}
+
+.badge-green{
+    background:#45a08a;
+    color:#fff;
+}
+
+.badge-gray{
+    background:#adb5bd;
+    color:#fff;
+}
+
+.badge-darkGray{
+    background: #918f8f;
+    color:#fff;
+}
+
+.badge-red{
+    background: #dc3545;
+    color: #fff;
+}
+
+.badge-yellow{
+    background: #ffc107;
+    color: #fff;
+}
+
+.badge-blue{
+    background: #007bff;
+    color: #fff;
+}
+
+/* Action */
+.btn-edit{
+    background:#2f6fe4;
+    color:#fff;
+    border:0;
+    padding:8px 14px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.btn-delete{
+    background: #ff5e5e;
+    color:#fff;
+    border:0;
+    padding:8px 14px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.btn-edit:hover {
+    background: #0051d5;
+}
+/* Empty */
+.empty{
+    text-align:center;
+    padding:20px;
+    color:#6c778f;
+}
+
+/* Style scrollbar (Chrome/Edge/Safari) */
+.table-wrap::-webkit-scrollbar{
+    width: 12px;
+}
+
+.table-wrap::-webkit-scrollbar-track{
+    background: #f0f3f9;
+    border-radius: 999px;
+}
+
+.table-wrap::-webkit-scrollbar-thumb{
+    background: #b9c2d3;
+    border-radius: 999px;
+    border: 3px solid #f0f3f9;
+}
+
+.table-wrap::-webkit-scrollbar-thumb:hover{
+    background: #98a4bb;
+}
+

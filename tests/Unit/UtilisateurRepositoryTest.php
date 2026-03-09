@@ -20,3 +20,31 @@ test('findByUtilisateur retourne un utilisateur si son id existe', function(){
         ->and($user->mdp)->toBe('1234')
         ->and($user->role)->toBe('etudiant');
 });
+
+test("Ajout d'un nouveau utilisateur", function(){
+    $repo = new UtilisateurRepository();
+    $data =[
+        'nom'          => 'el khalloufi',
+        'prenom'       => 'el khalloufi',
+        'email'        => 'youssef@',
+        'telephone'    => '',
+        'role'         => 'etudiant',
+        'statut'       => 'inactif',
+        'password'     => '1234'];
+
+    expect($repo->createUtilisateur($data))->toBeTrue();
+});
+
+test("Modifier un utilisateur", function(){
+    $repo = new UtilisateurRepository();
+    $data =[
+        'idUtilisateur' => 'ETU1',
+        'nom'          => 'salmi',
+        'prenom'       => 'said',
+        'email'        => 'saidS@univ-perp.fr',
+        'telephone'    => '0807',
+        'statut'       => 'actif',
+        'password'     => '1234'
+    ];
+    expect($repo->updateUtilisateur($data))->toBeTrue();
+});

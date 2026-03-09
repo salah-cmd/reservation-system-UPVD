@@ -1,7 +1,3 @@
-/* =======================================================
-   PAGE : Gestion des utilisateurs (Admin)
-   ======================================================= */
-
 .users-page{
     padding:5px;
 }
@@ -137,6 +133,15 @@
 /* Action */
 .btn-edit{
     background:#2f6fe4;
+    color:#fff;
+    border:0;
+    padding:8px 14px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.btn-delete{
+    background: #ff5e5e;
     color:#fff;
     border:0;
     padding:8px 14px;

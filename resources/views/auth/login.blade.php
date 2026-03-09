@@ -46,12 +46,10 @@
                 @csrf
 
                 <div class="field">
-                    <!--<label class="label" for="identifiant">Identifiant:</label>-->
                     <input class="input" id="identifiant" type="text" name="idUtilisateur" placeholder="identifiant" required>
                 </div>
 
                 <div class="field">
-                    <!--<label class="label" for="pass">Mot de passe:</label>-->
                     <input class="input" id="pass" type="password" name="password" placeholder="mot de passe" required>
                 </div>
 

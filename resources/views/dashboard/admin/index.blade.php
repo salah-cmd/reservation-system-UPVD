@@ -1,7 +1,7 @@
 @php use Carbon\Carbon;
 use \Illuminate\Support\Str;
 @endphp
-@extends('layouts.dashboard')
+@extends('layouts.admin')
 @section('title', 'Dashboard Admin')
 
 @section('content')
