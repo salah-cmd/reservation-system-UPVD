@@ -176,11 +176,11 @@ class DashboardRepository
         ];
     }
 
-        public function modifierStatutReservation($idReservation)
+        public function modifierStatutReservation($idReservation,$idUtilisateur)
     {
         try {
 
-            DB::statement('CALL annulerReservation(?)', [$idReservation]);
+            DB::statement('CALL annulerReservation(?,?)', [$idReservation,$idUtilisateur]);
 
             return [
                 'success' => true,

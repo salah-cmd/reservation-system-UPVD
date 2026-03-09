@@ -71,7 +71,8 @@ class EtudiantController extends Controller
 
     public function annulationReservation(DashboardRepository $dashboardRepo, Request $request)
     {
-
+        $user = session('user');
+        $userId = $user['idUtilisateur'];
 
         if ($request->has('idReservation')) {
             $idReservation = $request->idReservation;
@@ -79,7 +80,7 @@ class EtudiantController extends Controller
             $idReservation = null;
         }
 
-        $result = $dashboardRepo->modifierStatutReservation($idReservation);
+        $result = $dashboardRepo->modifierStatutReservation($idReservation,$userId);
 
         if(!$result['success']) {
             return redirect()->back()->with('error', $result['message']);
