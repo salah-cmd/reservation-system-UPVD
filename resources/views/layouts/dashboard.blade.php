@@ -11,23 +11,9 @@
 <body>
 <div class="dash">
     <aside class="sidebar">
-        <div class="brand">
-            <div class="avatar">{{ strtoupper($user['nomUtilisateur'][0])}}</div>
-            <div class="brand-text">
-                <div class="brand-title">{{strtoupper($user['nomUtilisateur'])}}</div>
-                <div class="brand-sub">UPVD</div>
-            </div>
-        </div>
 
         <nav class="menu">
-            <a class="item {{ request()->is('dashboard/admin') ? 'active' : ''}}"
-               href="/dashboard/admin"><span>🏠</span> Tableau de bord</a>
-            <a class="item {{ request()->is('dashboard/admin/utilisateurs') ? 'active' : '' }}"
-               href="/dashboard/admin/utilisateurs"><span>👤</span> Utilisateurs</a>
-            <a class="item" href="#"><span>🏫</span> Gestion des salles</a>
-            <a class="item" href="#"><span>📅</span> Réservations</a>
-            <a class="item" href="#"><span>📊</span> Rapports</a>
-            <a class="item" href="#"><span>⚙️</span> Paramètres</a>
+            @yield('slideBar')
         </nav>
 
         <div class="sidebar-footer">
