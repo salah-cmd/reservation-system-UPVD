@@ -2,49 +2,45 @@
 
 namespace App\Repositories;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Hash;
 
-class DashboardRepository
+class EnseignantRepository
 {
-    public function getAdminStats(): array
-    {
-        return [
-            'utilisateurs' => (int)DB::selectOne("SELECT COUNT(idUtilisateur) as nbUtilisateurs FROM utilisateur")->nbUtilisateurs,
-            'salles' => (int)DB::selectOne("SELECT COUNT(codeSalle) as nbSalles FROM SALLE")->nbSalles,
-            'reservationsEnAttente' => (int)DB::selectOne("SELECT COUNT(idReservation) as reservations FROM reservation where statut='enAttente'")->reservations,
-            'reservationsValide' => (int)DB::selectOne("SELECT COUNT(idReservation) as reservationV FROM reservation where statut='valider'")->reservationV,
-            'materiels' => (int)DB::selectOne("SELECT COUNT(codeMat) as materiels FROM materiels")->materiels,
-        ];
-    }
-
     public function getEtudiantStats($idUtilisateur): array
     {
         return [
             'salles' => (int)DB::selectOne("SELECT COUNT(codeSalle) as nbSalles FROM SALLE")->nbSalles,
-            'reservationsEnAttente' => (int)DB::selectOne("SELECT COUNT(idReservation) as reservations FROM reservation where idUtilisateur=? and statut='enAttente'", [$idUtilisateur])->reservations,
-            'reservationsValide' => (int)DB::selectOne("SELECT COUNT(idReservation) as reservationV FROM reservation where idUtilisateur=? and statut='valider'", [$idUtilisateur])->reservationV,
+            'reservationsTotales' => (int)DB::selectOne("SELECT COUNT(idReservation) as reservations FROM reservation where idUtilisateur=?", [$idUtilisateur])->reservations,
+            'reservationsActive' => (int)DB::selectOne("SELECT COUNT(idReservation) as reservationV FROM reservation where idUtilisateur=? and now() between dateDebut and dateFin", [$idUtilisateur])->reservationV,
             'materiels' => (int)DB::selectOne("SELECT COUNT(codeMat) as materiels FROM materiels")->materiels,
         ];
     }
-
-    public function getRecentReservations(): array
-    {
-        return DB::select("CALL getRecentReservations()");
-    }
-
-    // Pour Etudiant :
     public function getEtudiantDash(string $idUtilisateur): array
     {
-        $salle = DB::select("SELECT * FROM salle where typeSalle='groupe' and disponibilite=1 LIMIT 3");
+        $salle = DB::select("SELECT * FROM salle where typeSalle IN ('tp','amphi','reunion') and disponibilite=1 LIMIT 3");
         $materiel = DB::select("SELECT * FROM materiels LIMIT 3");
-        $reservation = DB::select("SELECT r.*, m.nom AS nomMateriel FROM reservation r LEFT JOIN reservationMateriels rm ON r.idReservation = rm.idReservation LEFT JOIN materiels m ON rm.codeMat = m.codeMat  WHERE r.idUtilisateur = ? and r.statut IN ('enAttente', 'valider') ORDER BY r.dateDebut DESC LIMIT 3", [$idUtilisateur]);
+        $reservation = DB::select("SELECT r.*, m.nom AS nomMateriel
+        FROM reservation r
+        LEFT JOIN reservationMateriels rm ON r.idReservation = rm.idReservation
+        LEFT JOIN materiels m ON rm.codeMat = m.codeMat
+        WHERE r.idUtilisateur = ?
+        and r.statut ='valider'
+        ORDER BY r.dateDebut DESC
+        LIMIT 3
+    ", [$idUtilisateur]);
 
-        $salles = DB::select("SELECT * FROM salle where typeSalle='groupe' and disponibilite=1");
+        $salles = DB::select("SELECT * FROM salle where typeSalle IN ('tp','amphi','reunion') and disponibilite=1");
         $materiels = DB::select("SELECT * FROM materiels");
-        $reservations = DB::select("SELECT r.*, m.nom AS nomMateriel FROM reservation r LEFT JOIN reservationMateriels rm ON r.idReservation = rm.idReservation LEFT JOIN materiels m ON rm.codeMat = m.codeMat WHERE r.idUtilisateur = ? and r.statut IN ('enAttente', 'valider') ORDER BY r.dateDebut DESC", [$idUtilisateur]);
+        $reservations = DB::select("SELECT r.*, m.nom AS nomMateriel
+        FROM reservation r
+        LEFT JOIN reservationMateriels rm ON r.idReservation = rm.idReservation
+        LEFT JOIN materiels m ON rm.codeMat = m.codeMat
+        WHERE r.idUtilisateur = ?
+        and r.statut ='valider'
+        ORDER BY r.dateDebut DESC
+    ", [$idUtilisateur]);
 
         return [
             'salles' => $salles,
@@ -66,6 +62,8 @@ class DashboardRepository
             'nbPersonnes' => 'nullable|integer|min:1',
             'codeMat' => 'nullable|array',
             'codeMat.*' => 'string',
+            'qteDemande' => 'nullable|array',
+            'qteDemande.*' => 'integer|min:1',
         ]);
 
         $SalleNonVide = !empty($validated['codeSalle']);
@@ -73,7 +71,6 @@ class DashboardRepository
 
         $reservSalle = false;
         $reservMat = false;
-        $message = null;
 
         $dateRetour = \Carbon\Carbon::parse($validated['dateFin'])->addWeek()->format('Y-m-d H:i:s');
 
@@ -83,15 +80,15 @@ class DashboardRepository
             try {
                 $reservSalle = DB::insert("
             INSERT INTO reservation
-                (idUtilisateur, dateDebut, dateFin, motif, statut, traiteLe, traitePar, codeSalle, nbPersonnes)
+                (idUtilisateur, dateDebut, dateFin, motif, statut, traiteLe, validePar, codeSalle, nbPersonnes)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ", [
                     $user['idUtilisateur'],
                     $validated['dateDebut'],
                     $validated['dateFin'],
                     $validated['motif'],
-                    'enAttente',
-                    null, null,
+                    'valider',
+                    now(), null,
                     $validated['codeSalle'],
                     $validated['nbPersonnes'] ?? null,
                 ]);
@@ -106,15 +103,15 @@ class DashboardRepository
             // On insère d'abord dans reservation sans salle
             $reservSalle = DB::insert("
             INSERT INTO reservation
-                (idUtilisateur, dateDebut, dateFin, motif, statut, traiteLe, traitePar, codeSalle, nbPersonnes)
+                (idUtilisateur, dateDebut, dateFin, motif, statut, traiteLe, validePar, codeSalle, nbPersonnes)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ", [
                 $user['idUtilisateur'],
                 $validated['dateDebut'],
                 $validated['dateFin'],
                 $validated['motif'],
-                'enAttente',
-                null, null, null, null,
+                'valider',
+                now(), null, null, null,
             ]);
 
             // On récupère l'id généré pour lier reservationMateriels
@@ -122,51 +119,7 @@ class DashboardRepository
 
             foreach ($validated['codeMat'] as $codeMat) {
 
-                try{
-                $reservMat = DB::insert("
-                INSERT INTO reservationMateriels (idReservation, codeMat, qteDemande, statut, dateRetour)
-                VALUES (?, ?, ?, ?, ?)
-            ", [
-                    $idReservation,
-                    $codeMat,
-                    1,
-                    'reserve',
-                    $dateRetour,
-                ]);
-            } catch (QueryException $e) {
-                    $message = $e->errorInfo[2];
-            }
-            }
-        }
-
-        // Cas 3 : salle + matériel
-        if ($SalleNonVide && $MatNonVide) {
-            // On insère dans reservation avec la salle
-
-            try {
-                $reservSalle = DB::insert("
-            INSERT INTO reservation
-                (idUtilisateur, dateDebut, dateFin, motif, statut, traiteLe, traitePar, codeSalle, nbPersonnes)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ", [
-                    $user['idUtilisateur'],
-                    $validated['dateDebut'],
-                    $validated['dateFin'],
-                    $validated['motif'],
-                    'enAttente',
-                    null, null,
-                    $validated['codeSalle'],
-                    $validated['nbPersonnes'] ?? null,
-                ]);
-            }catch (QueryException $e){
-                $message = $e->errorInfo[2];
-            }
-
-            // On récupère l'id généré pour lier reservationMateriels
-            $idReservation = DB::getPdo()->lastInsertId();
-
-            foreach ($validated['codeMat'] as $codeMat) {
-
+                $quantite = $validated['qteDemande'][$codeMat] ?? 1;
 
                 try {
                     $reservMat = DB::insert("
@@ -175,13 +128,60 @@ class DashboardRepository
             ", [
                         $idReservation,
                         $codeMat,
-                        1,
+                        $quantite,
                         'reserve',
                         $dateRetour,
                     ]);
                 }catch (QueryException $e){
                     $message = $e->errorInfo[2];
                 }
+            }
+        }
+
+        // Cas 3 : salle + matériel
+        if ($SalleNonVide && $MatNonVide) {
+            // On insère dans reservation avec la salle
+            try{
+                $reservSalle = DB::insert("
+            INSERT INTO reservation
+                (idUtilisateur, dateDebut, dateFin, motif, statut, traiteLe, validePar, codeSalle, nbPersonnes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ", [
+                    $user['idUtilisateur'],
+                    $validated['dateDebut'],
+                    $validated['dateFin'],
+                    $validated['motif'],
+                    'valider',
+                    now(), null,
+                    $validated['codeSalle'],
+                    $validated['nbPersonnes'] ?? null,
+                ]);
+            }catch (QueryException $e){
+                $message = $e->errorInfo[2];
+            }
+
+
+            // On récupère l'id généré pour lier reservationMateriels
+            $idReservation = DB::getPdo()->lastInsertId();
+
+            foreach ($validated['codeMat'] as $codeMat) {
+                $quantite = $validated['qteDemande'][$codeMat] ?? 1;
+
+                try {
+                    $reservMat = DB::insert("
+                INSERT INTO reservationMateriels (idReservation, codeMat, qteDemande, statut, dateRetour)
+                VALUES (?, ?, ?, ?, ?)
+            ", [
+                        $idReservation,
+                        $codeMat,
+                        $quantite,
+                        'reserve',
+                        $dateRetour,
+                    ]);
+                }catch (QueryException $e){
+                    $message = $e->errorInfo[2];
+                }
+
             }
         }
 
@@ -216,7 +216,6 @@ class DashboardRepository
 
     public function modifierParametre(array $data, $idUtilisateur)
     {
-        $mdp_hash = Hash::make($data['mdp']);
         if (empty($data['mdp'])) {
             $parametre = DB::update("UPDATE utilisateur SET nom=?, prenom=?, adresseMail=?, telephone=? WHERE idUtilisateur = ?",
                 [
@@ -232,7 +231,7 @@ class DashboardRepository
                     $data['nom'],
                     $data['prenom'],
                     $data['adresseMail'],
-                    $mdp_hash,
+                    $data['mdp'],
                     $data['telephone'],
                     $idUtilisateur,
                 ]);

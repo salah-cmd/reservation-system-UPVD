@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.etudiant')
 @section('title', 'Dashboard Étudiant - Système de Réservation')
 @section('styles')
      <link rel="stylesheet" href="{{ asset('css/etudiant/home.css') }}">
@@ -45,8 +45,8 @@
         });
     </script>
 @endsection
+@section('sideBar')
 
- @section('slideBar')
      <div class="brand">
          <div class="avatar">🎓</div>
          <div class="brand-text">
@@ -73,10 +73,10 @@
 
              <a href="/etudiant/historique" class="nav-item">
                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                           d="M12 8v4l3 3m9-3a9 9 0 11-3-6.708" />
                  </svg>
-                 Historique des Réservation
+                 Historique des Réservations
              </a>
          </div>
 
@@ -91,8 +91,7 @@
              </a>
          </div>
      </nav>
- @endsection
-
+@endsection
 @section('content')
 
 
@@ -116,13 +115,13 @@
 
     <!-- Stats Grid -->
     <div class="stats-grid">
-        <div class="stat-card blue">
+        <div class="stat-card green">
             <div class="stat-header">
                 <div>
                     <div class="stat-value">{{ $stats['reservationsValide'] ?? 0 }}</div>
-                    <div class="stat-label">Réservations Actives</div>
+                    <div class="stat-label">Réservations Validés</div>
                 </div>
-                <div class="stat-icon">📅</div>
+                <div class="stat-icon">✅</div>
             </div>
         </div>
 
@@ -136,7 +135,7 @@
             </div>
         </div>
 
-        <div class="stat-card green">
+        <div class="stat-card blue">
             <div class="stat-header">
                 <div>
                     <div class="stat-value">{{ $stats['salles'] ?? 0 }}</div>
@@ -169,19 +168,21 @@
             </div>
 
             <div class="reservation-list">
-                @if(isset($etudiants) && count($etudiants) > 0)
+                @if(isset($etudiants['reservation']) && count($etudiants['reservation']) > 0)
                     @foreach($etudiants['reservation'] as $reservation)
                         <div class="reservation-item">
-                            <h4>{{ $reservation->codeSalle }}</h4>
                             <div class="reservation-icon {{ $reservation->codeSalle }}">
                                 {{ $reservation->codeSalle === null ? '💻' : '🏫' }}
                             </div>
+                            <div>
+                            <h4>{{ $reservation->codeSalle === null ? $reservation->nomMateriel : $reservation->codeSalle }}</h4>
+                            </div>
                             <div class="reservation-info">
                                 <p><strong>Début :</strong>
-                                    {{ \Carbon\Carbon::parse($reservation->dateDebut)->translatedFormat('l d F Y à H:i') }}
+                                    {{ $reservation->dateDebut }}
                                 </p>
                                 <p><strong>Fin :</strong>
-                                    {{ \Carbon\Carbon::parse($reservation->dateFin)->translatedFormat('l d F Y à H:i') }}
+                                    {{ $reservation->dateFin}}
                                 </p>
                             </div>
                             <form method="post" action="{{route('reservation.update')}}">
@@ -214,15 +215,15 @@
             </div>
 
             <div class="rooms-grid">
-                @if(isset($etudiants) && count($etudiants) > 0)
+                @if(isset($etudiants['salle']) && count($etudiants['salle']) > 0)
                     @foreach($etudiants['salle'] as $salle)
                         <div class="room-item">
                             <div class="room-info">
-                                <h4>{{ $salle->typeSalle }}</h4>
+                                <h4>{{ $salle->codeSalle }}</h4>
                                 <p>Capacité: {{ $salle->capacite }} personnes</p>
                             </div>
                             <div class="availability">
-                                @if($salle->statut == 1)
+                                @if($salle->disponibilite == 1)
                                      <p>Disponible</p>
                                 @else <p>Non Disponible</p>
                                 @endif
@@ -252,7 +253,7 @@
         </div>
 
         <div class="materials-list">
-            @if(isset($etudiants) && count($etudiants) > 0)
+            @if(isset($etudiants['materiel']) && count($etudiants['materiel']) > 0)
                 @foreach($etudiants['materiel'] as $materiel)
                     <div class="material-item">
                         <div class="material-info">
@@ -286,7 +287,7 @@
             <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
                 @if(!empty($etudiants['materiels']))
                     @foreach($etudiants['materiels'] as $materiel)
-                        <div class="material-item">
+                        <div class="material-item" style="margin-top: 15px;">
                             <div class="material-info">
                                 <div class="material-icon">{{ $materiel->icon ?? '💻' }}</div>
                                 <div class="material-details">
@@ -319,19 +320,24 @@
                 </div>
 
                 <div class="modal-body">
-                    @if(isset($etudiants) && count($etudiants) > 0)
+                    @if(isset($etudiants['reservations']) && count($etudiants['reservations']) > 0)
                         @foreach($etudiants['reservations'] as $reservation)
-                            <div class="reservation-item">
-                                <h4>{{ $reservation->codeSalle  }}</h4>
+                            <div class="reservation-item" style="margin-top: 15px;">
 
-                                <div class="reservation-icon {{ $reservation->codeSalle }}">
-                                    {{ $reservation->codeSalle === null ? '💻' : '🏫' }}
-                                </div>
+                                    <div class="reservation-icon {{ $reservation->codeSalle }}">
+                                        {{ $reservation->codeSalle === null ? '💻' : '🏫' }}
+                                    </div>
+
+                                    <h4>{{ $reservation->codeSalle === null ? $reservation->nomMateriel : $reservation->codeSalle }}</h4>
 
                                 <div class="reservation-info">
                                     <p>Date Début: {{ $reservation->dateDebut }}</p>
                                     <p>Date Fin: {{ $reservation->dateFin }}</p>
                                 </div>
+
+                                <!--<p class="reservation-motif">
+                                    <strong>Motif :</strong> {{ $reservation->motif }}
+                                </p>-->
 
                                 <form method="post" action="{{route('reservation.update')}}">
                                     @csrf
@@ -352,31 +358,28 @@
                         </div>
                     @endif
                 </div>
-
             </div>
         </div>
 
-        <!-- Listes du Salles -->
+        <!-- Listes du Salles , ajoute code salle -->
 <div id="sallesModal" class="modal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Tous les Matériels</h2>
+            <h2>Tous les Salles</h2>
             <button class="close-modal" onclick="closeSallesModal()">✕</button>
         </div>
 
         <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-            @if(isset($etudiants) && count($etudiants) > 0)
+            @if(isset($etudiants['salles']) && count($etudiants['salles']) > 0)
                 @foreach($etudiants['salles'] as $salle)
-                    <div class="room-item">
+                    <div class="room-item" style="margin-top: 15px;">
                         <div class="room-info">
-                            <h4>{{ $salle->typeSalle }}</h4>
+
+                            <h4>{{ $salle->codeSalle }}</h4>
                             <p>Capacité: {{ $salle->capacite }} personnes</p>
                         </div>
                         <div class="availability">
-                            @if($salle->statut == 1)
                                 <p>Disponible</p>
-                            @else <p>Non Disponible</p>
-                            @endif
                         </div>
                     </div>
                 @endforeach

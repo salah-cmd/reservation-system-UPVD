@@ -250,14 +250,28 @@
     color: #b88600;
 }
 
-.status-valide {
+.status-valider {
     background: #d4f8d4;
     color: #1b7a1b;
 }
 
-.status-refuse {
+.status-refuser {
     background: #ffd6d6;
     color: #b30000;
+}
+.status-terminee {
+    background: #d6e6ff;
+    color: #0047b3;
+}
+
+.status-expiree {
+    background: #eeeeee;
+    color: #666666;
+}
+
+.status-annulee {
+    background: #d9d9d9;
+    color: #333333;
 }
 
 /* Empty state */

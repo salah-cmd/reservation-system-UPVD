@@ -4,9 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@yield('title', 'Dashboard')</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin/dashboard.css') }}">
+
     @yield('styles')
-    @yield('scripts')
+
 </head>
 <body>
 <div class="dash">
@@ -22,11 +25,21 @@
         <nav class="menu">
             <a class="item {{ request()->is('dashboard/admin') ? 'active' : ''}}"
                href="/dashboard/admin"><span>🏠</span> Tableau de bord</a>
+
             <a class="item {{ request()->is('dashboard/admin/utilisateurs') ? 'active' : '' }}"
                href="/dashboard/admin/utilisateurs"><span>👤</span> Utilisateurs</a>
-            <a class="item" href="#"><span>🏫</span> Gestion des salles</a>
-            <a class="item" href="#"><span>📅</span> Réservations</a>
+
+            <a class="item {{ request()->is('dashboard/admin/salles') ? 'active' : '' }}"
+               href="/dashboard/admin/salles"><span>🏫</span> Gestion des salles</a>
+
+            <a class="item {{ request()->is('dashboard/admin/materiels') ? 'active' : '' }}"
+               href="/dashboard/admin/materiels"><span>🧰</span> Gestion des matériels</a>
+
+            <a class="item {{ request()->is('dashboard/admin/reservations') ? 'active' : '' }}"
+               href="/dashboard/admin/reservations"><span>📅</span> Réservations</a>
+
             <a class="item" href="#"><span>📊</span> Rapports</a>
+
             <a class="item" href="#"><span>⚙️</span> Paramètres</a>
         </nav>
 
@@ -42,5 +55,10 @@
         @yield('content')
     </main>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+@yield('scripts')
 </body>
 </html>

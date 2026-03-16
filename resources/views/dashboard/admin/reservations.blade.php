@@ -6,6 +6,7 @@
 @endphp
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/reservation.css') }}">
+    <link rel="icon" href="{{ asset('images/UPVD_Logo.jpg') }}" type="image/png">
 @endsection
 
 @section('scripts')

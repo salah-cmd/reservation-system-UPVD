@@ -21,15 +21,40 @@ Route::middleware('auth.session')->group(function () {
 
         return match($user['roleUtilisateur']){
             'etudiant' => redirect('/etudiant/dashboard'),
-            'enseignant' => redirect('/dashboard/enseignant'),
+            'enseignant' => redirect('/enseignant/dashboard'),
             'admin' => redirect('/dashboard/admin'),
         };
     });
 
-    Route::get('/dashboard/enseignant', [EnseignantController::class, 'info'])
-        ->name('dashboard.enseignant')
+    //-------------------------------------Enseignant------------------------------------------------------------------------------------------
+
+    Route::get('/enseignant/dashboard', [EnseignantController::class, 'info'])
+        ->name('enseignant.home')
         ->middleware('role:enseignant');
 
+    Route::get('/enseignant/reservation',[EnseignantController::class, 'profile'])
+        ->name('reservation.page')
+        ->middleware('role:enseignant');
+
+    Route::post('/enseignant/reservation-add',[EnseignantController::class, 'store'])
+        ->name('reservation.store')
+        ->middleware('role:enseignant');
+
+    Route::post('/enseignant/dashboard',[EnseignantController::class, 'annulationReservation'])
+        ->name('reservation.update-enseignant')
+        ->middleware('role:enseignant');
+
+    Route::get('/enseignant/parametre', [EnseignantController::class, 'parametre'])
+        ->name('parametre.enseignant')
+        ->middleware('role:enseignant');
+
+    Route::post('/enseignant/parametre', [EnseignantController::class, 'modifParametre'])
+        ->name('parametre.update-enseignant')
+        ->middleware('role:enseignant');
+
+    Route::get('/enseignant/historique', [EnseignantController::class, 'historique'])
+        ->name('enseignant.historique')
+        ->middleware('role:enseignant');
 //----------------------------------------------ETUDIANT-------------------------------------------------------------------------------------
 
     Route::get('/etudiant/dashboard', [EtudiantController::class, 'info'])
@@ -61,7 +86,7 @@ Route::middleware('auth.session')->group(function () {
         ->middleware('role:etudiant');
 
 
-//-------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------Admin----------------------------------------------------------------------------
 
 
     Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])

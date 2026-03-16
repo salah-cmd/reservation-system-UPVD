@@ -16,7 +16,7 @@ class EtudiantController extends Controller
         $user = session('user');
         $userId = $user['idUtilisateur'];
 
-        $stats = $dashboardRepo->getAdminStats($userId);
+        $stats = $dashboardRepo->getEtudiantStats($userId);
 
         $etudiants = $dashboardRepo->getEtudiantDash($userId);
 
@@ -27,16 +27,16 @@ class EtudiantController extends Controller
         $user = session('user');
         $userId = $user['idUtilisateur'];
 
-        $stats = $dashboardRepo->getEtudiantMateriel($userId);
         $etudiants = $dashboardRepo->getEtudiantDash($userId);
 
 
-        return view('dashboard.etudiant.materiel', compact('user', 'etudiants', 'stats'));
+        return view('dashboard.etudiant.materiel', compact('user', 'etudiants'));
     }
 
     public function store(DashboardRepository $dashboardRepo, Request $request)
     {
         $user = session('user');
+
 
         $insertion = $dashboardRepo->createReservation($request, $user);
 
@@ -66,7 +66,7 @@ class EtudiantController extends Controller
 
         // ❌ Erreur
         return redirect()->route('materiels.page')
-            ->with('error', 'Erreur lors de la création ❌');
+            ->with('error', $insertion['message']);
     }
 
     public function annulationReservation(DashboardRepository $dashboardRepo, Request $request)
@@ -137,5 +137,7 @@ class EtudiantController extends Controller
 
         return view('dashboard.etudiant.historique', compact('user', 'historiques'));
     }
+
+    // TODO: Affiche codesalle et nom materiel pour reservation
 
 }

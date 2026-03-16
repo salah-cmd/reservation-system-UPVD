@@ -449,6 +449,7 @@ body {
 
 .reservation-info {
     flex: 1;
+    margin-left: 16px;
 }
 
 .reservation-info h4 {
@@ -464,10 +465,10 @@ body {
     font-weight: 500;
 }
 
-.reservation-meta {
-    display: flex;
-    gap: 12px;
-    align-items: center;
+.reservation-motif{
+    margin-top: 8px;
+    font-size: 14px;
+    color: #555;
 }
 
 .badge {
@@ -612,6 +613,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
+
 }
 
 .material-icon {
